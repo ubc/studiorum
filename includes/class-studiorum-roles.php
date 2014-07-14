@@ -82,7 +82,7 @@
 			add_role( 
 				'studiorum_student', __( 'Student', 'studiorum' ), array(
 					'read'                   => true,
-					'edit_posts'             => false,
+					'edit_posts'             => true,
 					'upload_files'           => true,
 					'delete_posts'           => false
 				)

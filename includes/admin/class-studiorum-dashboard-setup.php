@@ -34,7 +34,7 @@
 			add_action( 'wp_user_dashboard_setup', array( __CLASS__, 'wp_dashboard_setup__removeDefaultWidgetsForStudents' ) );
 
 			// Students do not need to see the 'media' menu item or view that page, either
-			add_action( 'admin_init', array( __CLASS__, 'admin_init__removeMenuItemsForStudents' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'admin_menu__removeMenuItemsForStudents' ) );
 			add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'wp_before_admin_bar_render__removeMenuItemsForStudents' ) );
 
 			// Force a 1-column dashboard layout for students
@@ -101,18 +101,21 @@
 		 * @return null
 		 */
 
-		public static function admin_init__removeMenuItemsForStudents()
+		public static function admin_menu__removeMenuItemsForStudents()
 		{
 
 			if( !Studiorum_Utils::usersRoleIs( 'studiorum_student' ) ){
 				return false;
 			}
 
-			remove_menu_page( 'upload.php' ); 		// Media
-			remove_menu_page( 'media-new.php' ); 		// Media
+			// remove_menu_page( 'upload.php' ); 		// Media
+			// remove_menu_page( 'media-new.php' ); 		// Media
 			remove_menu_page( 'link-manager.php' ); // Links
+			remove_menu_page( 'edit.php' ); // Posts
+			remove_menu_page( 'edit-comments.php' ); // Comments
+			remove_menu_page( 'tools.php' ); // Tools
 
-		}/* admin_init__removeMenuItemsForStudents() */
+		}/* admin_menu__removeMenuItemsForStudents() */
 
 
 		/**
