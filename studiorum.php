@@ -160,17 +160,23 @@
 			private function includes()
 			{
 
-				global $studiorum_options;
+				global $Studiorum_Options;
 
 				require_once STUDIORUM_PLUGIN_DIR . 'includes/class-studiorum-utils.php';
 				require_once STUDIORUM_PLUGIN_DIR . 'includes/class-studiorum-roles.php';
 				require_once STUDIORUM_PLUGIN_DIR . 'includes/class-studiorum-addon.php';
-				// $studiorum_options = edd_get_settings();
+
 
 				if( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) )
 				{
 
 					require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/class-studiorum-dashboard-setup.php';
+					
+					if( !class_exists( 'AdminPageFramework' ) ){
+						require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/libraries/settings/library/admin-page-framework.min.php';
+					}
+
+					require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/class-studiorum-options.php';
 				
 				}
 				else
@@ -262,3 +268,50 @@
 
 	// Get Studiorum Running
 	add_action( 'plugins_loaded', 'Studiorum', 1 );
+
+
+	if( !function_exists( 'get_studiorum_option' ) ) :
+
+		/**
+		 * Produce a generic helper function to get our options
+		 *
+		 * @since 0.1
+		 *
+		 * @param string $sectionID The section ID (key in the main array)
+		 * @param string $fieldID The FieldID - the individual setting
+		 * @param string $default What to return if not found
+		 * @return mixed $data - the found setting or the default
+		 */
+
+		function get_studiorum_option( $sectionID = false, $fieldID = false, $default = false )
+		{
+
+			// We *must* provide a section ID and field ID (much faster checking)
+			if( !$sectionID || !$fieldID ){
+				return new WP_Error( '1', __( 'You must provide a section ID and Field ID', 'studiorum' ) );
+			}
+
+			$mainOptionName = 'Studiorum_Options'; // Same as the instantiated class name above
+
+			$sectionAndField = array( $sectionID, $fieldID );
+
+			if( !class_exists( 'AdminPageFramework' ) )
+			{
+				
+				$fullOption = get_option( $mainOptionName, $default );
+
+				$data = ( isset( $fullOption[$sectionID] ) && isset( $fullOption[$sectionID][$fieldID] ) ) ? $fullOption[$sectionID][$fieldID] : $default;
+
+			}
+			else
+			{
+
+				$data = AdminPageFramework::getOption( $mainOptionName, $sectionAndField, $default );
+
+			}
+
+			return $data;
+
+		}/* get_studiorum_option() */
+
+	endif;
