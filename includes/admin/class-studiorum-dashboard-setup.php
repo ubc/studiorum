@@ -30,8 +30,11 @@
 		{
 
 			// For students, remove the default dashboard widgets
-			add_action( 'wp_dashboard_setup', array( __CLASS__, 'wp_dashboard_setup__removeDefaultWidgetsForStudents' ), 9999	 );
+			add_action( 'wp_dashboard_setup', array( __CLASS__, 'wp_dashboard_setup__removeDefaultWidgetsForStudents' ), 9999 );
 			add_action( 'wp_user_dashboard_setup', array( __CLASS__, 'wp_dashboard_setup__removeDefaultWidgetsForStudents' ) );
+
+			// We also need to clean up the educator's dashboard a little
+			add_action( 'wp_dashboard_setup', array( __CLASS__, 'wp_dashboard_setup__removeDefaultWidgetsForEducators' ), 9999 );
 
 			// Students do not need to see the 'media' menu item or view that page, either
 			add_action( 'admin_menu', array( __CLASS__, 'admin_menu__removeMenuItemsForStudents' ) );
@@ -49,8 +52,8 @@
 		 *
 		 * @since 0.1
 		 *
-		 * @param string $param description
-		 * @return string|int returnDescription
+		 * @param null
+		 * @return null
 		 */
 
 		public static function wp_dashboard_setup__removeDefaultWidgetsForStudents()
@@ -93,6 +96,31 @@
 
 
 		/**
+		 * Clean up the educator dashboard a little
+		 *
+		 * @since 0.1
+		 *
+		 * @param null
+		 * @return null
+		 */
+
+		public static function wp_dashboard_setup__removeDefaultWidgetsForEducators()
+		{
+
+			if( !Studiorum_Utils::usersRoleIs( 'studiorum_educator' ) ){
+				return false;
+			}
+
+			global $wp_meta_boxes;
+
+			unset( $wp_meta_boxes['dashboard']['normal']['core']['dashboard_plugins'] );
+			unset( $wp_meta_boxes['dashboard']['normal']['core']['dashboard_recent_drafts'] );
+			unset( $wp_meta_boxes['dashboard']['side']['core']['dashboard_primary'] );
+
+		}/* wp_dashboard_setup__removeDefaultWidgetsForEducators() */
+
+
+		/**
 		 * We need to hide certain menu items for students. Starting with the media page
 		 *
 		 * @since 0.1
@@ -108,8 +136,8 @@
 				return false;
 			}
 
-			// remove_menu_page( 'upload.php' ); 		// Media
-			// remove_menu_page( 'media-new.php' ); 		// Media
+			remove_menu_page( 'upload.php' ); 		// Media
+			remove_menu_page( 'media-new.php' ); 		// Media
 			remove_menu_page( 'link-manager.php' ); // Links
 			remove_menu_page( 'edit.php' ); // Posts
 			remove_menu_page( 'edit-comments.php' ); // Comments
@@ -153,12 +181,32 @@
 		public static function screen_layout_columns__oneColumnDashboard( $cols, $id, $screen )
 		{
 
-			// Don't change non-students
-			if( !Studiorum_Utils::usersRoleIs( 'studiorum_student' ) ){
+			$rolesForOneColumnDashboard = apply_filters( 'studiorum_roles_to_make_one_column_dashboard', array( 'studiorum_student', 'studiorum_educator' ) );
+
+			if( !$rolesForOneColumnDashboard || !is_array( $rolesForOneColumnDashboard ) || empty( $rolesForOneColumnDashboard ) ){
 				return $cols;
 			}
 
-			// 1 for students
+			$changeCols = false;
+
+			foreach( $rolesForOneColumnDashboard as $key => $role )
+			{
+				
+				if( Studiorum_Utils::usersRoleIs( $role ) ){
+
+					// This user is in a set of roles where we're changing the cols
+					$changeCols = true;
+					break;
+
+				}
+
+			}
+
+			if( !$changeCols ){
+				return $cols;
+			}
+
+			// 1 for this user
 			$cols['dashboard'] = 1;
 			return $cols;
 
@@ -177,8 +225,33 @@
 		public static function get_user_option_screen_layout_dashboard__oneColumnDashboard( $result, $option, $user )
 		{
 
+			$rolesForOneColumnDashboard = apply_filters( 'studiorum_roles_to_make_one_column_dashboard', array( 'studiorum_student', 'studiorum_educator' ) );
+
+			if( !$rolesForOneColumnDashboard || !is_array( $rolesForOneColumnDashboard ) || empty( $rolesForOneColumnDashboard ) ){
+				return $result;
+			}
+
+			$changeCols = false;
+
+			foreach( $rolesForOneColumnDashboard as $key => $role )
+			{
+				
+				if( Studiorum_Utils::usersRoleIs( $role ) ){
+
+					// This user is in a set of roles where we're changing the cols
+					$changeCols = true;
+					break;
+
+				}
+
+			}
+
+			if( !$changeCols ){
+				return $result;
+			}
+
 			// Don't change non-students
-			if( !Studiorum_Utils::usersRoleIs( 'studiorum_student' ) ){
+			if( !$changeCols ){
 				return $result;
 			}
 
