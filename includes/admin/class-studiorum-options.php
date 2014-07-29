@@ -56,12 +56,16 @@
 				}
 
 				// OK, we have some, create the page
-				$this->setRootMenuPage( $rootMenuPage );
+				$this->setRootMenuPage( $rootMenuPage, apply_filters( 'studiorum_settings_root_menu_icon', 'dashicons-welcome-learn-more' ) );
 
 
 				// OK we definitely have sub menu items, let's add it/them
 				foreach( $subMenuItems as $key => $subMenuItem ){
 					$this->addSubMenuItem( $subMenuItem );
+				}
+
+				if( !$this->isSettingsPage() ){
+					return;
 				}
 
 				// Grab our settings tabs
@@ -114,6 +118,11 @@
 
 				}
 
+				// By default we have the tabs visible at the top of each settings page
+				$this->setPageHeadingTabsVisibility( apply_filters( 'studiorum_settings_page_heading_tabs_visibility', true ) );
+
+				wp_enqueue_style( 'studiorum-admin-styles', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/css/admin-styles.css' );
+
 			}/* setUp() */
 
 
@@ -163,7 +172,9 @@
 			public function getRootMenuPage()
 			{
 
-				return apply_filters( 'studiorum_settings_root_menu_page', 'Settings' );
+				$rootMenuPage = apply_filters( 'studiorum_settings_root_menu_page', 'Studiorum' );
+
+				return $rootMenuPage;
 
 			}/* rootMenuPage() */
 
@@ -199,11 +210,18 @@
 
 				$settingsPageSlug = $this->getSettingsPageSlug();
 
-				$subMenuItems = array( 
-					array( 
+				$subMenuItems = array(
+
+					array(
 						'title' 	=> __( 'Studiorum', 'studiorum' ),
+						'page_slug'	=> 'studiorum_home'
+					),
+
+					array( 
+						'title' 	=> __( 'Settings', 'studiorum' ),
 						'page_slug' => $settingsPageSlug
 					)
+
 				);
 
 				$subMenuItems = apply_filters( 'studiorum_settings_sub_menu_items', $subMenuItems );
@@ -256,14 +274,15 @@
 				$settingsPageSlug = $this->getSettingsPageSlug();
 
 				$helpTabs = array( 
-					array(
-						'page_slug'					=>	$settingsPageSlug,
-						// 'page_tab_slug'			=>	null,	// ( optional )
-						'help_tab_title'			=>	'Admin Page Framework',
-						'help_tab_id'				=>	'admin_page_framework',	// ( mandatory )
-						'help_tab_content'			=>	__( 'This contextual help text can be set with the <code>addHelpTab()</code> method.', 'studiorum' ),
-						'help_tab_sidebar_content'	=>	__( 'This is placed in the sidebar of the help pane.', 'studiorum' ),
-					)
+					array()
+					// array(
+					// 	'page_slug'					=>	$settingsPageSlug,
+					// 	// 'page_tab_slug'			=>	null,	// ( optional )
+					// 	'help_tab_title'			=>	'Admin Page Framework',
+					// 	'help_tab_id'				=>	'admin_page_framework',	// ( mandatory )
+					// 	'help_tab_content'			=>	__( 'This contextual help text can be set with the <code>addHelpTab()</code> method.', 'studiorum' ),
+					// 	'help_tab_sidebar_content'	=>	__( 'This is placed in the sidebar of the help pane.', 'studiorum' ),
+					// )
 				);
 
 				$helpTabs = apply_filters( 'studiorum_settings_help_tabs', $helpTabs, $settingsPageSlug );
@@ -288,11 +307,9 @@
 				$settingsSections = array(
 
 					array(
-						'section_id'		=>	'text_fields',	// avoid hyphen(dash), dots, and white spaces
-						// 'page_slug'		=>	'apf_builtin_field_types',	// <-- the method remembers the last used page slug and the tab slug so they can be omitted from the second parameter.
+						'section_id'		=>	'basic_settings',	// avoid hyphen(dash), dots, and white spaces
 						'tab_slug'		=>	'basic',
-						'title'			=>	__( 'Text Fields', 'studiorum' ),
-						'description'	=>	__( 'These are text type fields.', 'studiorum' ),	// ( optional )
+						'title'			=>	__( 'Studiorum Settings', 'studiorum' ),
 						'order'			=>	10,	// ( optional ) - if you don't set this, an index will be assigned internally in the added order
 					)
 
@@ -322,7 +339,7 @@
 
 					array(	// Single text field
 						'field_id'	=>	'text',
-						'section_id'	=>	'text_fields',
+						'section_id'	=>	'basic_settings',
 						'title'	=>	__( 'Text', 'studiorum' ),
 						'description'	=>	__( 'Type something here. This text is inserted with the <code>description</code> key in the field definition array.', 'studiorum' ),
 						'help'	=>	__( 'This is a text field and typed text will be saved. This text is inserted with the <code>help</code> key in the field definition array.', 'studiorum' ),
@@ -336,7 +353,7 @@
 
 					array(	// Single text field
 						'field_id'	=>	'another_text',
-						'section_id'	=>	'text_fields',
+						'section_id'	=>	'basic_settings',
 						'title'	=>	__( 'Another Text', 'studiorum' ),
 						'description'	=>	__( 'Option description', 'studiorum' ),
 						'help'	=>	__( '.', 'studiorum' ),
@@ -355,6 +372,146 @@
 				return $settingsFields;
 
 			}/* getSettingsFields() */
+
+
+			/**
+			 * The main Studiorum home page - absolutely nothing like Jetpack at all. Nope. Nothing like it.
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return null
+			 */
+
+			public function do_studiorum_home()
+			{
+
+				//Studiorum_Utils::locateTemplateInPlugin( LECTIO_PLUGIN_DIR, 'includes/templates/max-submissions-reached.php' )
+				$studiorumModuleHighlights = $this->getModuleHighlights();
+				?>
+
+				<div id="studiorum_home_wrap">
+
+					<div class="studiorum_home_header">
+
+						<div class="studiorum_home_header_intro">
+							
+							<h1><?php _e( 'Create powerful self-hosted higher education websites simply by selecting the features you want.', 'studiorum' ); ?></h1>
+
+						</div><!-- .studiorum_home_header_intro -->
+
+					</div><!-- .studiorum_home_header -->
+
+
+					<div class="studiorum_home_inner">
+
+						<div id="studiorum_modules_highlights">
+							
+
+
+						</div><!-- #studiorum_modules_highlights -->
+
+						<div id="studiorum_modules_full_list">
+							
+
+						</div><!-- #studiorum_modules_full_list -->
+
+					</div><!-- .studiorum_home_inner -->
+
+				</div><!-- #studiorum_home_wrap -->
+
+				<?php
+
+			}/* studiorum_home() */
+
+
+			/**
+			 * Get a list of all of our available modules
+			 *
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return array An array of arrays of all of our studiorum modules
+			 */
+
+			private function getAllModules()
+			{
+
+				$mofdules = array(
+
+					array(
+						'id' 				=> 'lectio',
+						'title' 			=> __( 'Lectio', 'studiorum' ),
+						'icon' 				=> 'clipboard', // dashicons-#
+						'excerpt' 			=> __( 'Add the ability for students to submit rich content to your website all from the front-end.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
+						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150'
+					),
+
+					array(
+						'id' 				=> 'side_comments',
+						'title' 			=> __( 'Side Comments', 'studiorum' ),
+						'icon' 				=> 'migrate', // dashicons-#
+						'excerpt' 			=> __( 'Add paragraph-level commenting to your website\'s content.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
+						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150'
+					),
+
+				);
+
+			}/* getAllModules() */
+
+
+			/**
+			 * Get our module highlights which are shown on the main Studiorum home page
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return array An array of arrays containing the highlighted modules
+			 */
+
+			public function getModuleHighlights()
+			{
+
+
+
+			}/* getModuleHighlights() */
+
+
+			/**
+			 * Determine if we're on a settings page or not
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return bool
+			 */
+
+			private function isSettingsPage()
+			{
+
+				if( !isset( $_GET['page'] ) ){
+					return false;
+				}
+
+				$possiblePages = array(
+					'studiorum_home',
+					'studiorum_settings'
+				);
+
+				if( !in_array( sanitize_text_field( $_GET['page'] ), $possiblePages ) ){
+					return false;
+				}
+
+				return true;
+
+			}/* isSettingsPage() */
 
 		}/* class Studiorum_Options */
 

@@ -1,0 +1,172 @@
+/*
+	Need to adjust the main container so we have a full-bleed bg
+*/
+
+.admin-page-framework-container{
+	position: absolute;
+	top: 85px;
+	left: -20px;
+	right: 0;
+}
+
+/*
+	The top-of-the-page settings tabs need to butt up to the top left/right of the screen
+	to look similar to Jetpack's main items
+
+	Dark: #0074a2;
+	Light: #2ea2cc;
+*/
+
+.admin-page-framework-page-heading-tab{
+	position: absolute;
+	top: 0;
+	left: -20px;
+	right: 0;
+	height: 50px;
+	background: #0074a2;
+}
+
+	/* Now style the tabs themselves */
+	.admin-page-framework-page-heading-tab .nav-tab-wrapper{
+		border: none;
+		padding: 0;
+	}
+
+		.admin-page-framework-page-heading-tab .nav-tab-wrapper .nav-tab,
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a{
+			border: none;
+			line-height: 1;
+			padding: 18px 21px;
+			color: white;
+			font-family: "Open Sans", sans-serif;
+			font-size: 14px;
+			font-weight: normal;
+			background: #0074a2;
+			margin: 0;
+			transition: 0.3s linear all;
+		}
+
+		.admin-page-framework-page-heading-tab .nav-tab-wrapper .nav-tab.nav-tab-active,
+		.admin-page-framework-page-heading-tab .nav-tab-wrapper .nav-tab:hover{
+			background: #2ea2cc;
+		}
+
+
+/*
+	Sub-menu tabs (i.e. on the main settings page)
+	Active sub menu tab has a little css arrow pointing down
+*/
+.admin-page-framework-in-page-tab{
+	position: absolute;
+	top: 50px;
+	left: -20px;
+	right: 0;
+	background: #2ea2cc;
+	height: 35px;
+}
+
+	.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab{
+		border: none;
+		padding: 0;
+		margin: 0;
+	}
+
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a{
+			font-size: 12px;
+			padding: 11px 10px 12px;
+			background: #2ea2cc;
+		}
+
+		/* CSS Down arrow */
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a.nav-tab-active{
+			position: relative;
+		}
+
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a.nav-tab-active:after,
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a.nav-tab-active:before{
+			top: 100%;
+			left: 50%;
+			border: solid transparent;
+			content: " ";
+			height: 0;
+			width: 0;
+			position: absolute;
+			pointer-events: none;
+		}
+
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a.nav-tab-active:after{
+			border-color: rgba(46, 162, 204, 0);
+			border-top-color: #2ea2cc;
+			border-width: 5px;
+			margin-left: -5px;
+		}
+
+		.admin-page-framework-in-page-tab .nav-tab-wrapper.in-page-tab a.nav-tab-active:before{
+			border-color: rgba(46, 162, 204, 0);
+			border-top-color: #2ea2cc;
+			border-width: 6px;
+			margin-left: -6px;
+		}
+
+/*
+	Styling for the main content of the settings tabs - i.e. the actual fields
+	Bring the main container in so we're not butted right up against the main menu
+*/
+
+.admin-page-framework-container .admin-page-framework-content .admin-page-framework-sectionset{
+	padding: 0 30px;
+}
+
+	body #poststuff .metabox-holder .admin-page-framework-section-title h3{
+		font: 400 1.57143em/1.4em "proxima-nova", "Open Sans", Helvetica, sans-serif;
+		margin: 20px 0 0;
+	}
+
+	/* Added a label-note span to the input labels */
+	.label-note{
+		display: block;
+		font-size: 0.85em;
+		line-height: 1.3;
+		margin-top: 5px;
+		font-style: italic;
+		color: rgb(140,140,140);
+		font-weight: 400;
+	}
+
+/* The submit 'save changes' button is outside the main div, so need to align it with the fields */
+p.submit{
+	margin-left: 30px;
+}
+
+/* When we save, we need to adjust where the message is shown */
+#setting-error-Studiorum_Options.updated,
+#setting-error-Studiorum_Options.settings-error{
+	margin: 35px 0 0;
+	padding: 3px 5px;
+}
+
+#setting-error-Studiorum_Options.updated p,
+#setting-error-Studiorum_Options.settings-error p{
+	margin: 0;
+}
+/*
+	We simply don't need the footer on our options pages (there's several items output by the framework) 
+	and also because of absolute positioning, it can cause issues on longer tabs
+*/
+#wpfooter{
+	display: none;
+}
+
+/* Fix for the main menu scrolling and footer weirdness */
+.studiorum_page_studiorum_settings #wpbody-content{
+	float: none;
+}
+
+/* Also, because of above fix, we have to re-align the inline help */
+.studiorum_page_studiorum_settings #wpwrap{
+	margin-top: -10px;
+}
+
+#screen-meta{
+	margin-top: 10px !important;
+}

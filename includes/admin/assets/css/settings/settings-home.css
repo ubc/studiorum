@@ -1,0 +1,16 @@
+/*
+	We're semi-replicating the look and feel of Jetpack. It works well, and has a lot of eyes on it, so the UI is 
+	well-thought-out and tested.
+*/
+
+#studiorum_home_wrap{
+	padding: 30px;
+	margin-top: -45px;
+	background: #2ea2cc;
+	color: white;
+}
+
+	#studiorum_home_wrap h1{
+		font: 300 2.57143em/1.4em "proxima-nova", "Open Sans", Helvetica, sans-serif;
+		text-align: center;
+	}
