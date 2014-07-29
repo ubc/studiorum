@@ -41,12 +41,12 @@
 		// Setup some default options
 		$options = array();
 
-		// Add a temporary option to note that EDD pages have been created
+		// Add a temporary option to note that Studiorum pages have been created
 		set_transient( '_studiorum_installed', $options, 30 );
 
 		update_option( 'studiorum_version', STUDIORUM_VERSION );
 
-		// Create EDD shop roles
+		// Create Studiorum roles
 		$roles = new Studiorum_Roles;
 		$roles->add_roles();
 		$roles->add_caps();
