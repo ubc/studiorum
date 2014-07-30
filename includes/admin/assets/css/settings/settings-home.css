@@ -13,6 +13,8 @@
 	.studiorum_home_header h1{
 		font: 300 2.57143em/1.4em "proxima-nova", "Open Sans", Helvetica, sans-serif;
 		text-align: center;
+		max-width: 960px;
+		margin: 0 auto;
 	}
 
 	.home_section{
@@ -122,6 +124,10 @@
 			background: #f8fcfe;
 		}
 
+		.module:hover .active-inactive{
+			border-bottom-color: #2ea2cc;
+		}
+
 		.module.new,
 		.module.comingsoon{
 			position: relative;
@@ -180,6 +186,24 @@
 				padding: 0.71429em 0.8em 0;
 			}
 
+			#poststuff .module h3.icon:before{
+				display: inline-block;
+				-webkit-font-smoothing: antialiased;
+				position: relative;
+				top: 1px;
+				left: -3px;
+				margin-right: 2px;
+				opacity: 0.8;
+				font: normal 20px "dashicons";
+				vertical-align: top;
+			}
+
+			#poststuff .module h3.icon.clipboard:before{ content: "\f481"; }
+			#poststuff .module h3.icon.migrate:before{ content: "\f310"; }
+			#poststuff .module h3.icon.groups:before{ content: "\f307"; }
+			#poststuff .module h3.icon.networking:before{ content: "\f325"; }
+			#poststuff .module h3.icon.yes:before{ content: "\f147"; }
+
 			.module p{
 				margin: 0;
 				color: #686f72;
@@ -191,7 +215,10 @@
 				text-align: center;
 				background: #7baf60;
 				position: relative;
+				border-bottom: 1px solid #dae0e2;
 				bottom: -1px;
+				-webkit-transition: all 0.3s ease-in;
+				transition: all 0.3s ease-in;
 			}
 
 				.module .active-inactive p{
