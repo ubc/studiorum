@@ -205,3 +205,8 @@
 				.module .active-inactive.active p{
 					color: #686f72;
 				}
+
+/* @todo Fix this hack */
+.wrap{
+	min-height: 1100px;
+}
