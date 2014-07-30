@@ -26,7 +26,7 @@
 		 * @return bool whether the user is the specified role
 		 */
 
-		public static function usersRoleIs( $role = false )
+		public static function usersRoleIs( $role = false, $current_user = false )
 		{
 
 			// Simple sanitization
@@ -41,19 +41,19 @@
 			if( !is_user_logged_in() ){
 				return false;
 			}
-
 			// OK, we can check this user, use WP's globalized $curent_user
-			global $current_user; 
-			get_currentuserinfo();
+			if( !$current_user )
+			{
+
+				global $current_user; 
+				get_currentuserinfo();
+				
+			}
 
 			if( $current_user && isset( $current_user->caps ) && is_array( $current_user->caps ) && isset( $current_user->caps[ $role ] ) && $current_user->caps[ $role ] == 1 ){
-
 				return true;
-
 			}else{
-
 				return false;
-
 			}
 
 		}/* usersRoleIs() */
