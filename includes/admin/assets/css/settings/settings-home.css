@@ -3,14 +3,205 @@
 	well-thought-out and tested.
 */
 
-#studiorum_home_wrap{
+.studiorum_home_header{
 	padding: 30px;
 	margin-top: -45px;
 	background: #2ea2cc;
 	color: white;
 }
 
-	#studiorum_home_wrap h1{
+	.studiorum_home_header h1{
 		font: 300 2.57143em/1.4em "proxima-nova", "Open Sans", Helvetica, sans-serif;
 		text-align: center;
 	}
+
+	.home_section{
+		max-width: 960px;
+		margin: 0 auto;
+	}
+
+	.home_section_wrap.highlight{
+		background: white;
+		border-bottom: 1px solid #d6d6d6;
+		padding: 30px 0;
+	}
+
+		#poststuff .studiorum_home_inner h2{
+			color: #5d6d74;
+			font: 300 2.57143em/1.4em "proxima-nova", "Open Sans", Helvetica, sans-serif;
+			text-align: center;
+			text-shadow: 0 1px 1px #fff;
+			padding: 1.25em 0 0.69444em;
+			margin: 0;
+		}
+
+	.studiorum_home_inner,
+	.studiorum_modules,
+	.studiorum_groups{
+		overflow: hidden;
+		clear: both;
+	}
+
+	/* Plugin groups list */
+	.plugin-group{
+		position: relative;
+		float: left;
+		margin: 0 5px 10px;
+		width: 310px;
+		-webkit-transition: all 0.2s ease-in-out;
+		transition: all 0.2s ease-in-out;
+		box-sizing: border-box;
+		border: 1px solid #dddddd;
+		cursor: pointer;
+	}
+
+	.plugin-group:hover{
+		top: -5px;
+		box-shadow: 0 5px 0 rgba(0, 0, 0, 0.02);
+	}
+
+		.group-image{
+			line-height: 0;
+			border-bottom: 1px solid #dddddd;
+		}
+
+		.group-details{
+			padding: 20px;
+			background: #f5f5f5;
+		}
+
+			#poststuff .admin-page-framework-content .group-details h3{
+				margin: 0 0 0.58824em;
+				color: #697b84;
+				font-family: "Open Sans", sans-serif;
+				font-size: 1.4em;
+				line-height: 1em;
+				font-weight: 800;
+				text-align: center;
+			}
+
+			#poststuff .admin-page-framework-content .plugin-group:hover .group-details h3{
+				color: #2ea2cc;
+			}
+
+			#poststuff .admin-page-framework-content .group-details p{
+				margin: 0;
+				color: #6e818a;
+				font-family: "Open Sans", sans-serif;
+				text-align: center;
+				font-weight: 300;
+			}
+
+	/* Full feature list */
+	.studiorum_modules,
+	.studiorum_groups{
+		margin: 0;
+		padding: 20px 0;
+	}
+
+		.module{
+			cursor: pointer;
+			display: block;
+			padding: 0;
+			text-align: left;
+			border: 1px solid #dae0e2;
+			background: #fff;
+			-webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0.03);
+			box-shadow: 0 0 0 rgba(0, 0, 0, 0.03);
+			-webkit-transition: all 0.3s ease-in;
+			transition: all 0.3s ease-in;
+			float: left;
+			margin: 0 5px 10px;
+			width: 310px;
+			box-sizing: border-box;
+			min-height: 120px;
+		}
+
+		.module:hover{
+			border-color: #2ea2cc;
+			background: #f8fcfe;
+		}
+
+		.module.new,
+		.module.comingsoon{
+			position: relative;
+		}
+
+		.module.new:after{
+			content: 'NEW';
+			position: absolute;
+			top: -16px;
+			right: -8px;
+			padding-top: 13px;
+			width: 32px;
+			height: 32px;
+			color: #fff;
+			font-size: 8px;
+			font-weight: 800;
+			text-align: center;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+			background: url("../../images/new-badge.svg") center center no-repeat;
+			-webkit-background-size: 100%;
+			background-size: 100%;
+			border-radius: 50%;
+			-webkit-background-clip: padding-box;
+			background-clip: padding-box;
+		}
+
+		.module.comingsoon:after{
+			content: 'SOON';
+			position: absolute;
+			top: -16px;
+			right: -8px;
+			padding-top: 13px;
+			width: 32px;
+			height: 32px;
+			color: #fff;
+			font-size: 8px;
+			font-weight: 800;
+			text-align: center;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+			background: url("../../images/coming-soon-badge.svg") center center no-repeat;
+			-webkit-background-size: 100%;
+			background-size: 100%;
+			border-radius: 50%;
+			-webkit-background-clip: padding-box;
+			background-clip: padding-box;
+			
+		}
+
+			#poststuff .module h3.icon{
+				width: auto;
+				margin: 0;
+				color: #1a8dba;
+				font-size: 1.14286em;
+				line-height: 1.4em;
+				font-weight: 700;
+				padding: 0.71429em 0.8em 0;
+			}
+
+			.module p{
+				margin: 0;
+				color: #686f72;
+				font-size: 0.85714em;
+				padding: 0.71429em 1.07143em 1em;
+			}
+
+			.module .active-inactive{
+				text-align: center;
+				background: #7baf60;
+				position: relative;
+				bottom: -1px;
+			}
+
+				.module .active-inactive p{
+					color: white;
+				}
+
+			.module .active-inactive.active{
+				background: #f7f7f7;
+			}
+
+				.module .active-inactive.active p{
+					color: #686f72;
+				}

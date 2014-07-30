@@ -386,85 +386,18 @@
 			public function do_studiorum_home()
 			{
 
-				//Studiorum_Utils::locateTemplateInPlugin( LECTIO_PLUGIN_DIR, 'includes/templates/max-submissions-reached.php' )
-				$studiorumModuleHighlights = $this->getModuleHighlights();
-				?>
+				// Grab our modules and details about plugins as well as plugin groups so we can pass them to the templates
+				$modules 					= Studiorum_Utils::getAllModules();
 
-				<div id="studiorum_home_wrap">
+				$allStudiorumPlugins 		= Studiorum_Utils::getStudiorumPlugins();
+				$allActiveStudiorumPlugins	= Studiorum_Utils::getActiveStudiorumPlugins();
 
-					<div class="studiorum_home_header">
+				$pluginGroups 				= Studiorum_Utils::getPluignGroups();
 
-						<div class="studiorum_home_header_intro">
-							
-							<h1><?php _e( 'Create powerful self-hosted higher education websites simply by selecting the features you want.', 'studiorum' ); ?></h1>
-
-						</div><!-- .studiorum_home_header_intro -->
-
-					</div><!-- .studiorum_home_header -->
-
-
-					<div class="studiorum_home_inner">
-
-						<div id="studiorum_modules_highlights">
-							
-
-
-						</div><!-- #studiorum_modules_highlights -->
-
-						<div id="studiorum_modules_full_list">
-							
-
-						</div><!-- #studiorum_modules_full_list -->
-
-					</div><!-- .studiorum_home_inner -->
-
-				</div><!-- #studiorum_home_wrap -->
-
-				<?php
+				// Now include our main template which itself includes the different parts for each module/group
+				require( Studiorum_Utils::locateTemplateInPlugin( STUDIORUM_PLUGIN_DIR, 'includes/admin/templates/studiorum-settings-home.php' ) );
 
 			}/* studiorum_home() */
-
-
-			/**
-			 * Get a list of all of our available modules
-			 *
-			 *
-			 * @since 0.1
-			 *
-			 * @param null
-			 * @return array An array of arrays of all of our studiorum modules
-			 */
-
-			private function getAllModules()
-			{
-
-				$mofdules = array(
-
-					array(
-						'id' 				=> 'lectio',
-						'title' 			=> __( 'Lectio', 'studiorum' ),
-						'icon' 				=> 'clipboard', // dashicons-#
-						'excerpt' 			=> __( 'Add the ability for students to submit rich content to your website all from the front-end.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
-						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150'
-					),
-
-					array(
-						'id' 				=> 'side_comments',
-						'title' 			=> __( 'Side Comments', 'studiorum' ),
-						'icon' 				=> 'migrate', // dashicons-#
-						'excerpt' 			=> __( 'Add paragraph-level commenting to your website\'s content.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
-						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150'
-					),
-
-				);
-
-			}/* getAllModules() */
 
 
 			/**
