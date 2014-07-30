@@ -401,23 +401,6 @@
 
 
 			/**
-			 * Get our module highlights which are shown on the main Studiorum home page
-			 *
-			 * @since 0.1
-			 *
-			 * @param null
-			 * @return array An array of arrays containing the highlighted modules
-			 */
-
-			public function getModuleHighlights()
-			{
-
-
-
-			}/* getModuleHighlights() */
-
-
-			/**
 			 * Determine if we're on a settings page or not
 			 *
 			 * @since 0.1
