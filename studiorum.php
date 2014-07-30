@@ -192,6 +192,8 @@
 				// Allow us to hook in here
 				do_action( 'studiorum_after_includes' );
 
+				add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( $this, 'plugin_action_links__addSettingsLink' ) );
+
 			}/* includes() */
 
 
@@ -241,6 +243,26 @@
 				}
 
 			}/* load_textdomain() */
+
+
+			/**
+			 * Add a settings link to the main plugins listing screen
+			 *
+			 * @since 0.1
+			 *
+			 * @param array $links - currently added links
+			 * @return array $links - modified links
+			 */
+
+			public function plugin_action_links__addSettingsLink( $links )
+			{
+
+				$links[] = '<a href="'. get_admin_url( null, 'admin.php?page=studiorum_home' ) .'">' . __( 'Information', 'studiorum' ) . '</a>';
+				$links[] = '<a href="'. get_admin_url( null, 'admin.php?page=studiorum_settings' ) .'">' . __( 'Settings', 'studiorum' ) . '</a>';
+
+				return $links;
+
+			}/* plugin_action_links__addSettingsLink() */
 
 		}/* class Studiorum */
 
