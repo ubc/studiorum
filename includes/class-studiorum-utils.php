@@ -157,4 +157,344 @@
 
 		}/* locateTemplateInPlugin() */
 
+
+		/**
+			 * Get a list of all of our available modules
+			 *
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return array An array of arrays of all of our studiorum modules
+			 */
+
+			public static function getAllModules()
+			{
+
+				$modules = array(
+
+					'studiorum-lectio' => array(
+						'id' 				=> 'lectio',
+						'plugin_slug'		=> 'studiorum-lectio',
+						'title' 			=> __( 'Lectio', 'studiorum' ),
+						'icon' 				=> 'clipboard', // dashicons-#
+						'excerpt' 			=> __( 'Add the ability for students to submit rich content to your website all from the front-end.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
+						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-08-01'
+					),
+
+					'studiorum-side-comments' => array(
+						'id' 				=> 'side_comments',
+						'plugin_slug'		=> 'studiorum-side-comments',
+						'title' 			=> __( 'Side Comments', 'studiorum' ),
+						'icon' 				=> 'migrate', // dashicons-#
+						'excerpt' 			=> __( 'Add paragraph-level commenting to your website\'s content.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/side-comments',
+						'content' 			=> __( '<p>Standard blog comments are good for a conversation about the page as a whole. But what if you need to provide feedback specific to a certain paragraph? That becomes clunky and hard to maintain. Side Comments gives you the ability to allow people to comment on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-06-01'
+					),
+
+					'studiorum-user-groups' => array(
+						'id' 				=> 'user_groups',
+						'plugin_slug'		=> 'studiorum-user-groups',
+						'title' 			=> __( 'User Groups', 'studiorum' ),
+						'icon' 				=> 'groups', // dashicons-#
+						'excerpt' 			=> __( 'Group your users into specific sets and then allow those groups to work together.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/user-groups',
+						'content' 			=> __( '<p>Group your users into specific sets - users can be in more than one group or no group. With the User Groups Automatic module you are able to create random groups at the click of a button.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-06-01'
+					),
+
+					'studiorum-user-groups-automatic' => array(
+						'id' 				=> 'user_groups_automatic',
+						'plugin_slug'		=> 'studiorum-user-groups-automatic',
+						'title' 			=> __( 'Automatic User Groups', 'studiorum' ),
+						'requires'			=> 'user_groups',
+						'icon' 				=> 'networking', // dashicons-#
+						'excerpt' 			=> __( 'Automatically create random user groups. Requires the User Groups module.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/user-groups-automatic',
+						'content' 			=> __( '<p>Instead of manually crafting your user groups, use the Automatic User Groups addon to randomly assign users to groups. Tell is how many groups you want or how many users per group and it does the rest. Also allows you to specify what happens with outliers should there be an uneven number of users per group.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-06-01'
+					),
+
+					'studiorum-gradebook' => array(
+						'id' 				=> 'gradebook',
+						'plugin_slug'		=> 'studiorum-gradebook',
+						'title' 			=> __( 'Grade Book', 'studiorum' ),
+						'icon' 				=> 'yes', // dashicons-#
+						'excerpt' 			=> __( 'Give feedback to your students. View statistics across all users and allow students to see their own statistics.', 'studiorum' ),
+						'image' 			=> 'http://dummyimage.com/310/162',
+						'link' 				=> 'http://code.ubc.ca/studiorum/gradebook',
+						'content' 			=> __( '<p>Information here about what gradebook does</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-10-01',
+						'coming_soon'		=> true
+					)
+
+				);
+
+				return apply_filters( 'studiorum_modules', $modules );
+
+			}/* getAllModules() */
+
+
+			/**
+			 * Method to return a list of plugins currently available which are 'studiorum' plugins
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return array list of studiorum plugins
+			 */
+
+			public static function getStudiorumPlugins()
+			{
+
+				if( !function_exists( 'get_plugins' ) ){
+					require_once ABSPATH . 'wp-admin/includes/plugin.php';
+				}
+
+				// Returns a list of all available plugins
+				$allPlugins = get_plugins();
+
+				if( !$allPlugins || !is_array( $allPlugins ) || empty( $allPlugins ) ){
+					return;
+				}
+
+				$output = array();
+
+				foreach( $allPlugins as $pathAndSlug => $pluginData )
+				{
+				
+					$splitPathAndSlug = explode( '/', $pathAndSlug );
+
+					// Search for 'studiorum' in the folder name
+					$folderName = strtolower( $splitPathAndSlug[0] );
+
+					$searchFor = 'studiorum';
+
+					$pos = strpos( $folderName, $searchFor );
+
+					if( $pos === false ){
+						continue;
+					}
+
+					$output[$folderName] = $pluginData;
+
+				}
+
+				return $output;
+
+			}/* getStudiorumPlugins() */
+
+
+			/**
+			 * Get a list of all studiorum plugins that are *active*
+			 *
+			 * @since 0.1
+			 *
+			 * @param null
+			 * @return array of currently activated studiorum plugins
+			 */
+
+			public static function getActiveStudiorumPlugins()
+			{
+
+				$activePlugins = wp_get_active_and_valid_plugins();
+
+				if( !$activePlugins || !is_array( $activePlugins ) || empty( $activePlugins ) ){
+					return;
+				}
+
+				$output = array();
+
+				// Each active plugin file has the plugin dir prepended, we need to strip that
+				$pathToRemove = WP_PLUGIN_DIR . '/';
+
+				foreach( $activePlugins as $key => $path )
+				{
+				
+					$searchFor = 'studiorum';
+
+					$pos = strpos( $path, $searchFor );
+
+					if( $pos === false ){
+						continue;
+					}
+
+					// Remove the path
+					$withoutPath = str_replace( $pathToRemove, '', $path );
+
+					// Now we just need the directory name
+					$splitPathAndSlug = explode( '/', $withoutPath );
+
+					// Search for 'studiorum' in the folder name
+					$folderName = strtolower( $splitPathAndSlug[0] );
+
+					$output[] = $folderName;
+
+				}
+
+				return $output;
+
+			}/* getActiveStudiorumPlugins() */
+
+
+			/**
+			 * Get the plugin 'groups' which are sets of plugins with some metadata about them
+			 *
+			 * @since 0.1
+			 *
+			 * @todo There should be a class stub which sets up each property and then each group should be an extension of that class which then adds a filter to a list. This method should then simply return that filter
+			 * @param null
+			 * @return array An array of plugin groups
+			 */
+
+			public static function getPluignGroups()
+			{
+
+				$groups = array(
+
+					'christina' => array(
+						'id'				=> 'christina',
+						'title'				=> 'Christina',
+						'icon' 				=> 'admin-appearance',
+						'excerpt' 			=> 'Enable your students to submit assignments, have them collaborate in groups and get inline feedback.',
+						'image' 			=> 'http://dummyimage.com/308x160',
+						'link' 				=> 'http://code.ubc.ca/studiorum/courses/christina',
+						'content' 			=> __( '<p>Create assignments - with deadlines - that enable your students to submit their work in a beautiful rich text editor. The student (and peers in their custom user groups) are able to make inline comments to get fine-grained critique.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-06-01',
+						'plugins'			=> array(
+							'gravityforms/gravityforms.php',
+							'gravity-forms-custom-post-types/gfcptaddon.php',
+							'gravity-forms-wysiwyg/gf_wysiwyg.php',
+							'studiorum/studiorum.php',
+							'studiorum-lectio/studiorum-lectio.php',
+							'studiorum-side-comments/studiorum-side-comments.php',
+							'studiorum-user-groups/studiorum-user-groups.php'
+						),
+						'examples' 			=> array(
+							'http://arts.ubc.ca/arts-one/'
+						)
+					),
+					
+					'simon' => array(
+						'id'				=> 'simon',
+						'title'				=> 'Simon',
+						'icon' 				=> 'lightbulb',
+						'excerpt' 			=> 'Enable students to rate each others\' work simply and easily using a hot-or-not style voting system.',
+						'image' 			=> 'http://dummyimage.com/308x160/222/fff',
+						'link' 				=> 'http://code.ubc.ca/studiorum/courses/simon',
+						'content' 			=> __( '<p>Provide a simple way for your students to provide hot-or-not style feedback to easily discover which content is best.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-07-01',
+						'plugins'			=> array(
+							'gravityforms/gravityforms.php',
+							'gravity-forms-custom-post-types/gfcptaddon.php',
+							'gravity-forms-wysiwyg/gf_wysiwyg.php',
+							'studiorum/studiorum.php',
+							'studiorum-lectio/studiorum-lectio.php',
+							'studiorum-hon/studiorum-hon.php'
+						),
+						'examples' 			=> array(
+							'http://physics.ubc.ca/'
+						)
+					),
+
+					'paul' => array(
+						'id'				=> 'paul',
+						'title'				=> 'Paul',
+						'icon' 				=> 'share',
+						'excerpt' 			=> 'Curate content via delicious.com and show it on your site in a beautiful, searchable, engaging way.',
+						'image' 			=> 'http://dummyimage.com/308x160/fff/333',
+						'link' 				=> 'http://code.ubc.ca/studiorum/courses/paul',
+						'content' 			=> __( '<p>Curate and tag content using the popular delicious.com service and then allow students to search quickly and easily to see the content you want them to see.</p>', 'studiorum' ),
+						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
+						'date'				=> '2014-05-01',
+						'plugins'			=> array(
+							'studiorum/studiorum.php',
+							'studiorum-hon/studiorum-delicious.php'
+						),
+						'examples' 			=> array(
+							'http://sauder.ubc.ca/'
+						)
+					),
+
+				);
+
+				return $groups;
+
+			}/* getPluignGroups() */
+
+
+			/**
+			 * Helper method to determine if the passed plugin slug is an active plugin
+			 *
+			 * @since 0.1
+			 *
+			 * @param string $slug slug of plugin to check if it is active
+			 * @param array $plugins An array of plugins to check through
+			 * @return string|int returnDescription
+			 */
+
+			public static function isStudiorumPluginActive( $slug = false, $plugins = false )
+			{
+
+				if( !$slug ){
+					return false;
+				}
+
+				if( !$plugins ){
+					$plugins = static::getActiveStudiorumPlugins();
+				}
+
+				// Sanitize the slug
+				$slug = sanitize_text_field( $slug );
+				
+				if( in_array( $slug, array_values( $plugins ) ) ){
+					return true;
+				}
+
+				return false;
+
+			}/* isStudiorumPluginActive() */
+
+			/**
+			 * Determine whether a plugin is 'new' or not - basically has it been added in the last month
+			 *
+			 * @since 0.1
+			 *
+			 * @param string $pluginDate - the date the plugin was published
+			 * @return bool
+			 */
+
+			public static function isPluginNew( $pluginDate = false )
+			{
+
+				if( !$pluginDate ){
+					return false;
+				}
+
+				$now = strtotime( 'now' );
+				$dateToCheck = strtotime( $pluginDate );
+				$thirtyDaysAgo = strtotime( '30 days ago' );
+
+				if( $dateToCheck > $thirtyDaysAgo ){
+					return true;
+				}
+
+				return false;
+
+			}/* isPluginNew() */
+
 	}/* class Studiorum_Utils */
