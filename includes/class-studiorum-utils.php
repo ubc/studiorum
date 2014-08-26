@@ -159,6 +159,36 @@
 
 
 		/**
+		 * Method to fetch, rather than echo, the contents of a template file
+		 * Uses output buffering. Bad times, but at the moment, there's no better way to do this neatly.
+		 *
+		 * @since 0.1
+		 *
+		 * @param string $path - the full absolute URL to the template part
+		 * @return string $content - the content of that template
+		 */
+
+		public static function fetchTemplatePart( $path, $data = false )
+		{
+
+			if( !is_array( $data ) ){
+				$data = array( $data );
+			}
+
+			ob_start();
+
+			include( $path );
+
+			$content = ob_get_contents();
+
+			ob_end_clean();
+
+			return $content;
+
+		}/* fetchTemplatePart() */
+
+
+		/**
 			 * Get a list of all of our available modules
 			 *
 			 *
