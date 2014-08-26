@@ -337,7 +337,7 @@
 
 				$settingsFields = array(
 
-					array(	// Single text field
+					/*array(	// Single text field
 						'field_id'	=>	'text',
 						'section_id'	=>	'basic_settings',
 						'title'	=>	__( 'Text', 'studiorum' ),
@@ -363,7 +363,7 @@
 						'attributes'	=>	array(
 							'size'	=>	20,
 						),
-					)
+					)*/
 
 				);
 
