@@ -23,11 +23,28 @@
 	 * @var array $allActiveStudiorumPlugins - A list of all *active* studiorum plugins
 	 */
 
+	$activePlugins = Studiorum_Utils::getAllActivePluginsWithoutPluginPath();
 
+	$groupActive = true;
+
+	$thisGroupPlugins = $groupDetails['plugins'];
+
+	foreach( $thisGroupPlugins as $key => $pluginSlug )
+	{
+
+		if( !in_array( $pluginSlug, array_values( $activePlugins ) ) )
+		{
+			$groupActive = false;
+			break;
+		}
+
+	}
+	
+	$activeClass = ( $groupActive === true ) ? 'group-active' : 'group-inactive';
 
 ?>
 
-	<li class="plugin-group" data-name="<?php echo $groupDetails['title']; ?>">
+	<li class="plugin-group <?php echo $activeClass; ?>" data-active="<?php echo $activeClass; ?>" data-name="<?php echo $groupDetails['title']; ?>" data-groupid="<?php echo $groupDetails['id']; ?>">
 		
 		<div class="group-image">
 			<img src="<?php echo $groupDetails['image']; ?>" alt="<?php echo $groupDetails['title']; ?>" />

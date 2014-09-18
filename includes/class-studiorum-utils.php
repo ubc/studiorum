@@ -201,76 +201,7 @@
 			public static function getAllModules()
 			{
 
-				$modules = array(
-
-					'studiorum-lectio' => array(
-						'id' 				=> 'lectio',
-						'plugin_slug'		=> 'studiorum-lectio',
-						'title' 			=> __( 'Lectio', 'studiorum' ),
-						'icon' 				=> 'clipboard', // dashicons-#
-						'excerpt' 			=> __( 'Add the ability for students to submit rich content to your website all from the front-end.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/lectio',
-						'content' 			=> __( '<p>By levaraging Gravity Forms (another WordPress plugin), Lectio gives you a way to create an assignment submission form giving your students the capabiity to submit assignments with a rich text editor all from the front-end of your site.</p><p>When a student makes a submission they are taken to a copy of that submission which only they (and you) can see. If you enable the Studiorum User Groups addon, then students in the same group as the one who made the submission can also see and comment on the submission.</p><p>Studiorum also allows you to limit the number of times each student can submit an assignment.</p><p>If you enable the Studiorum Side Comments add-on then you and the student are able to make comments on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
-						'date'				=> '2014-08-01'
-					),
-
-					'studiorum-side-comments' => array(
-						'id' 				=> 'side_comments',
-						'plugin_slug'		=> 'studiorum-side-comments',
-						'title' 			=> __( 'Side Comments', 'studiorum' ),
-						'icon' 				=> 'migrate', // dashicons-#
-						'excerpt' 			=> __( 'Add paragraph-level commenting to your website\'s content.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/side-comments',
-						'content' 			=> __( '<p>Standard blog comments are good for a conversation about the page as a whole. But what if you need to provide feedback specific to a certain paragraph? That becomes clunky and hard to maintain. Side Comments gives you the ability to allow people to comment on a paragraph-by-paragraph basis.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
-						'date'				=> '2014-06-01'
-					),
-
-					'studiorum-user-groups' => array(
-						'id' 				=> 'user_groups',
-						'plugin_slug'		=> 'studiorum-user-groups',
-						'title' 			=> __( 'User Groups', 'studiorum' ),
-						'icon' 				=> 'groups', // dashicons-#
-						'excerpt' 			=> __( 'Group your users into specific sets and then allow those groups to work together.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/user-groups',
-						'content' 			=> __( '<p>Group your users into specific sets - users can be in more than one group or no group. With the User Groups Automatic module you are able to create random groups at the click of a button.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
-						'date'				=> '2014-06-01'
-					),
-
-					'studiorum-user-groups-automatic' => array(
-						'id' 				=> 'user_groups_automatic',
-						'plugin_slug'		=> 'studiorum-user-groups-automatic',
-						'title' 			=> __( 'Automatic User Groups', 'studiorum' ),
-						'requires'			=> 'user_groups',
-						'icon' 				=> 'networking', // dashicons-#
-						'excerpt' 			=> __( 'Automatically create random user groups. Requires the User Groups module.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/user-groups-automatic',
-						'content' 			=> __( '<p>Instead of manually crafting your user groups, use the Automatic User Groups addon to randomly assign users to groups. Tell is how many groups you want or how many users per group and it does the rest. Also allows you to specify what happens with outliers should there be an uneven number of users per group.</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
-						'date'				=> '2014-06-01'
-					),
-
-					'studiorum-gradebook' => array(
-						'id' 				=> 'gradebook',
-						'plugin_slug'		=> 'studiorum-gradebook',
-						'title' 			=> __( 'Grade Book', 'studiorum' ),
-						'icon' 				=> 'yes', // dashicons-#
-						'excerpt' 			=> __( 'Give feedback to your students. View statistics across all users and allow students to see their own statistics.', 'studiorum' ),
-						'image' 			=> 'http://dummyimage.com/310/162',
-						'link' 				=> 'http://code.ubc.ca/studiorum/gradebook',
-						'content' 			=> __( '<p>Information here about what gradebook does</p>', 'studiorum' ),
-						'content_sidebar' 	=> 'http://dummyimage.com/300x150',
-						'date'				=> '2014-10-01',
-						'coming_soon'		=> true
-					)
-
-				);
+				$modules = array();
 
 				return apply_filters( 'studiorum_modules', $modules );
 
@@ -377,6 +308,44 @@
 				return $output;
 
 			}/* getActiveStudiorumPlugins() */
+
+
+			/**
+			 * Get all active plugins and strip off the path
+			 *
+			 * @since 0.1
+			 *
+			 * @param string $param description
+			 * @return string|int returnDescription
+			 */
+
+			public static function getAllActivePluginsWithoutPluginPath()
+			{
+
+				$activePlugins = wp_get_active_and_valid_plugins();
+
+				if( !$activePlugins || !is_array( $activePlugins ) || empty( $activePlugins ) ){
+					return;
+				}
+
+				$output = array();
+
+				// Each active plugin file has the plugin dir prepended, we need to strip that
+				$pathToRemove = WP_PLUGIN_DIR . '/';
+
+				foreach( $activePlugins as $key => $path )
+				{
+
+					// Remove the path
+					$withoutPath = str_replace( $pathToRemove, '', $path );
+
+					$output[] = $withoutPath;
+
+				}
+
+				return $output;
+
+			}/* getAllActivePluginsWithoutPluginPath() */
 
 
 			/**

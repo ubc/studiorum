@@ -123,6 +123,17 @@
 
 				wp_enqueue_style( 'studiorum-admin-styles', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/css/admin-styles.css' );
 
+				// For the groups activation, we have some AJAX, so we need to set up a few JS vars
+				$studiorumGroupVars = array(
+					'admin_ajax_url' => admin_url( 'admin-ajax.php' ),
+				);
+
+				wp_register_script( 'studiorum-module-group-activity', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/js/module-group-activity.js' );
+
+				wp_localize_script( 'studiorum-module-group-activity', 'studiorum_group_vars', $studiorumGroupVars );
+
+				wp_enqueue_script( 'studiorum-module-group-activity' );
+
 			}/* setUp() */
 
 
