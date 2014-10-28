@@ -171,6 +171,7 @@
 				{
 
 					require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/class-studiorum-dashboard-setup.php';
+					require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/class-studiorum-ajax.php';
 					
 					if( !class_exists( 'AdminPageFramework' ) ){
 						require_once STUDIORUM_PLUGIN_DIR . 'includes/admin/libraries/settings/library/admin-page-framework.min.php';
