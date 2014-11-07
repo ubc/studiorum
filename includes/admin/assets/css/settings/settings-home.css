@@ -58,8 +58,7 @@
 	}
 
 	.plugin-group:hover{
-		top: -5px;
-		box-shadow: 0 5px 0 rgba(0, 0, 0, 0.02);
+		
 	}
 
 		.group-image{
@@ -93,6 +92,36 @@
 				text-align: center;
 				font-weight: 300;
 			}
+
+			.group-actions{
+				
+				clear: both;
+			}
+
+				.group-action-onoff, .group-action-info{
+					background: #f8fcfe;
+				}
+
+				.group-actions a{
+					text-decoration: none;
+					display: block;
+					text-align: center;
+					padding: 0.75em 0.5em;
+					border-top: 1px solid #dddddd;
+					-webkit-transition: all 0.3s ease-in;
+					transition: all 0.2s ease-in;
+				}
+
+				.group-action-onoff a{
+					border-right: 1px solid #dddddd;
+				}
+
+				.group-actions a:hover{
+					background: #2ea2cc;
+					color: white;
+				}
+
+
 
 	/* Full feature list */
 	.studiorum_modules,
@@ -203,6 +232,7 @@
 			#poststuff .module h3.icon.groups:before{ content: "\f307"; }
 			#poststuff .module h3.icon.networking:before{ content: "\f325"; }
 			#poststuff .module h3.icon.yes:before{ content: "\f147"; }
+			#poststuff .module h3.icon.desktop:before{ content: "\f472"; }
 
 			.module p{
 				margin: 0;

@@ -377,7 +377,6 @@
 						'gravityforms/gravityforms.php',
 						'gravity-forms-custom-post-types/gfcptaddon.php',
 						'gravity-forms-wysiwyg/gf_wysiwyg.php',
-						'studiorum/studiorum.php',
 						'studiorum-lectio/studiorum-lectio.php',
 						'studiorum-side-comments/studiorum-side-comments.php',
 						'studiorum-user-groups/studiorum-user-groups.php'
@@ -401,9 +400,8 @@
 						'gravityforms/gravityforms.php',
 						'gravity-forms-custom-post-types/gfcptaddon.php',
 						'gravity-forms-wysiwyg/gf_wysiwyg.php',
-						'studiorum/studiorum.php',
 						'studiorum-lectio/studiorum-lectio.php',
-						'studiorum-hon/studiorum-hon.php'
+						'custom-css-meta-box/custom-css-meta-box.php'
 					),
 					'examples' 			=> array(
 						'http://physics.ubc.ca/'
@@ -421,7 +419,6 @@
 					'content_sidebar' 	=> 'http://dummyimage.com/300x150',
 					'date'				=> '2014-05-01',
 					'plugins'			=> array(
-						'studiorum/studiorum.php',
 						'studiorum-hon/studiorum-delicious.php'
 					),
 					'examples' 			=> array(
@@ -496,6 +493,133 @@
 
 		}/* isPluginNew() */
 
+
+		/**
+		 * Enable a set of plugins by their group ID
+		 * A lot of this method's code is just error checking
+		 *
+		 * @author Richard Tape <@richardtape>
+		 * @since 1.0
+		 * @param (string) $groupName - the group name (ID) of the set of plugins to activate
+		 * @return (array) - any data we wish to send back to the AJAX handler
+		 */
+		
+		public static function enablePluginGroup( $groupID = false )
+		{
+
+			if( !$groupID ){
+				return new WP_Error( 'no-group-id', __( 'No Group ID was provided in enablePluginGroup()', 'studiorum' ) );
+			}
+
+			// Sanitize the group ID
+			$groupID = sanitize_title_with_dashes( $groupID );
+
+			// check this group ID exists and we have data for it
+			$pluginGroups = Studiorum_Utils::getPluignGroups();
+
+			// No groups?
+			if( !is_array( $pluginGroups ) ){
+				return new WP_Error( 'no-plugin-groups', __( 'No plugin groups found', 'studiorum' ) );
+			}
+
+			// No group with that ID?
+			if( !array_key_exists( $groupID, $pluginGroups ) ){
+				return new WP_Error( 'no-plugin-group-with-that-id', __( 'No plugin group can be found with that ID', 'studiorum' ) );
+			}
+
+			// Let's grab the data for this group
+			$groupData = $pluginGroups[$groupID];
+
+			// Check that this group contains a 'plugins' array
+			if( !isset( $groupData['plugins'] ) || !is_array( $groupData['plugins'] ) || empty( $groupData['plugins'] ) ){
+				return new WP_Error( 'group-contains-no-plugins', __( 'This plugin group contains no plugins', 'studiorum' ) );
+			}
+
+			// cache the plugins list for this plugin group
+			$thisGroupsPlugins = $groupData['plugins'];
+
+			// Now we need to go through this array of plugins and determine which - if any - are already active.
+			// We'll then remove those active plugins from this set
+			// Start a fresh set for inactive pluigins
+			$inactivePlugins = array();
+
+			// Just in case the function isn't available (front-end, but *just to be on the safe side*)
+			if( !function_exists( 'is_plugin_active' ) ){
+				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			}
+
+			foreach( $thisGroupsPlugins as $key => $pluginPath )
+			{
+
+				if( !is_plugin_active( $pluginPath ) ){
+					$inactivePlugins[] = $pluginPath;
+				}
+
+			}
+
+			// Empty? No inactive plugins, then. Lets's say so
+			if( empty( $inactivePlugins ) ){
+				return new WP_Error( 'all-group-plugins-active', __( 'All plugins in this group are already active', 'studiorum' ) );
+			}
+
+			do_action( 'studiorum_before_activate_plugin_group', $groupID, $inactivePlugins );
+
+			// We now have an array of plugins that are inactive that we'd like to activate. We should do that.
+			foreach( $inactivePlugins as $key => $plugin ){
+				static::activatePlugin( $plugin );
+			}
+
+			do_action( 'studiorum_after_activate_plugin_group', $groupID, $inactivePlugins );
+
+			// We'll have an empty filter here for extra data that we wish to send back to the AJAX request
+			$returnData = apply_filters( 'studiorum_after_activate_plugin_group_return_data', array(), $groupID, $inactivePlugins );
+
+			// OK, those plugins should now be active, report success
+			return $returnData;
+
+		}/* enablePluginGroup() */
+
+
+		/**
+		 * DANGER, WILL ROBINSON
+		 * ---------------------
+		 *
+		 * Generally speaking, plugin activation should be done using the WP sandbox on the plugin's page
+		 * We don't have that luxury. Use this method with absolute caution. If things break, I'm blaming you.
+		 *
+		 * @author Richard Tape <@richardtape>
+		 * @since 1.0
+		 * @param (string) $pluginPath - a part-path to a plugin to activate
+		 * @return null
+		 */
+		
+		public static function activatePlugin( $pluginPath )
+		{
+
+			$trimmedPath 	= trim( $pluginPath );
+
+			$current 		= get_option( 'active_plugins' );
+			$pluginPath 	= plugin_basename( $trimmedPath );
+
+			if( !in_array( $pluginPath, $current ) )
+			{
+
+				$current[] = $pluginPath;
+				sort( $current );
+
+				do_action( 'activate_plugin', $trimmedPath );
+				
+				update_option( 'active_plugins', $current );
+
+				do_action( 'activate_' . $trimmedPath );
+				do_action( 'activated_plugin', $trimmedPath );
+
+			}
+
+			return null;
+
+		}/* activatePlugin() */
+		
 		
 
 	}/* class Studiorum_Utils */

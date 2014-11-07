@@ -29,8 +29,8 @@
 		public static function init()
 		{
 
-			add_action( 'wp_ajax_enable_plugin_group', array( $this, 'wp_ajax_enable_plugin_group__ajaxHandler' ) );
-			add_action( 'wp_ajax_nopriv_enable_plugin_group', array( $this, 'wp_ajax_nopriv_enable_plugin_group__noDice' ) );
+			add_action( 'wp_ajax_enable_plugin_group', array( 'Studiorum_AJAX', 'wp_ajax_enable_plugin_group__ajaxHandler' ) );
+			add_action( 'wp_ajax_nopriv_enable_plugin_group', array( 'Studiorum_AJAX', 'wp_ajax_nopriv_enable_plugin_group__noDice' ) );
 
 		}/* init() */
 
@@ -45,11 +45,11 @@
 		
 		public function wp_ajax_enable_plugin_group__ajaxHandler()
 		{
-
+file_put_contents( WP_CONTENT_DIR . '/debug.log', "\n" . 'this: ' . print_r( $_REQUEST, true ), FILE_APPEND  );
 			$result = array();
 
 			// Nonce check?
-			if ( !wp_verify_nonce( $_REQUEST['nonce'], 'my_user_vote_nonce' ) ) {
+			if ( !wp_verify_nonce( $_REQUEST['nonce'], 'studiorum_group_action_nonce' ) ) {
 				$result['type'] = 'error';
 				$result['reason'] = 'nonce';
 			}
@@ -63,23 +63,9 @@
 				$result['reason'] = 'no groupID';
 			}
 
-			// check this group ID exists and we have data for it
-			$pluginGroups = Studiorum_Utils::getPluignGroups();
-
-			if( !$pluginGroups || !is_array( $pluginGroups ) ){
-				$result['type'] = 'error';
-				$result['reason'] = 'no groups';
-			}
-
-			// Group ID doesn't exist
-			if( !array_key_exists( $groupID, $pluginGroups ) ){
-				$result['type'] = 'error';
-				$result['reason'] = 'groupID does not exist';
-			}
-
 			// Do we have an error? Run away.
 			if( !empty( $result ) ){
-				$result = json_encode($result);
+				$result = json_encode( $result );
 				echo $result;
 				die();
 			}
@@ -93,9 +79,20 @@
 				$result['reason'] = 'plugin enablement failure';
 			}
 
+			if( is_wp_error( $pluginGroupEnabled ) ){
+				$result['type'] = 'error';
+				$result['reason'] = $pluginGroupEnabled->get_error_message();
+			}
+
+			if( !empty( $result ) ){
+				$result = json_encode($result);
+				echo $result;
+				die();
+			}
+
 			// OK, looks like we're good, let's report back to the JS
 			$result['type'] = 'success';
-			$result = json_encode($result);
+			$result = json_encode( $result );
 			echo $result;
 			die();
 

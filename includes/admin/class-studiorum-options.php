@@ -125,7 +125,13 @@
 
 				// For the groups activation, we have some AJAX, so we need to set up a few JS vars
 				$studiorumGroupVars = array(
-					'admin_ajax_url' => admin_url( 'admin-ajax.php' ),
+					'admin_ajax_url'	=> admin_url( 'admin-ajax.php' ),
+					'strings' 			=> array(
+						'activate' 		=> __( 'Activate', 'studiorum' ),
+						'deactivate' 	=> __( 'Deactivate', 'studiorum' ),
+						'loading'		=> __( 'Loading', 'studiorum' ),
+						'ays'			=> __( 'Are you sure you want to', 'studiorum' )
+					)
 				);
 
 				wp_register_script( 'studiorum-module-group-activity', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/js/module-group-activity.js' );
@@ -133,6 +139,11 @@
 				wp_localize_script( 'studiorum-module-group-activity', 'studiorum_group_vars', $studiorumGroupVars );
 
 				wp_enqueue_script( 'studiorum-module-group-activity' );
+
+				// Loading CSS/JS
+				wp_register_script( 'studiorum-loading-anims', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/js/loading.js', array( 'studiorum-module-group-activity' ), null, true );
+				wp_enqueue_script( 'studiorum-loading-anims' );
+				wp_enqueue_style( 'studiorum-loading-anims', trailingslashit( STUDIORUM_PLUGIN_URL ) . 'includes/admin/assets/css/loading.css' );
 
 			}/* setUp() */
 

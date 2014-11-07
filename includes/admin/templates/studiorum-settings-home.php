@@ -38,6 +38,7 @@
 					<ul class="studiorum_groups">
 						
 					<?php foreach( $pluginGroups as $groupID => $groupDetails ) : ?>
+						<?php $nonce = wp_create_nonce( 'studiorum_group_action_nonce' ); ?>
 						<?php require( Studiorum_Utils::locateTemplateInPlugin( STUDIORUM_PLUGIN_DIR, 'includes/admin/templates/group-item.php' ) ); ?>
 					<?php endforeach; ?>
 
