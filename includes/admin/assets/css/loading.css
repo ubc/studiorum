@@ -31,6 +31,10 @@
 	cursor: progress;
 }
 
+.progress-button:hover{
+	
+}
+
 .progress-button .content {
 	position: relative;
 	display: block;

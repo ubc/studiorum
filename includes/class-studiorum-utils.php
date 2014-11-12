@@ -500,7 +500,7 @@
 		 *
 		 * @author Richard Tape <@richardtape>
 		 * @since 1.0
-		 * @param (string) $groupName - the group name (ID) of the set of plugins to activate
+		 * @param (string) $groupID - the group name (ID) of the set of plugins to activate
 		 * @return (array) - any data we wish to send back to the AJAX handler
 		 */
 		
@@ -619,7 +619,131 @@
 			return null;
 
 		}/* activatePlugin() */
+
+
+		/**
+		 * Disable a group of plugins by group ID
+		 *
+		 * @author Richard Tape <@richardtape>
+		 * @since 1.0
+		 * @param (string) $groupID - the group name (ID) of the set of plugins to deactivate
+		 * @return (array) - any data we wish to send back to the AJAX handler
+		 */
+		
+		public static function disablePluginGroup( $groupID = false )
+		{
+
+			if( !$groupID ){
+				return new WP_Error( 'no-group-id', __( 'No Group ID was provided in disablePluginGroup()', 'studiorum' ) );
+			}
+
+			// Sanitize the group ID
+			$groupID = sanitize_title_with_dashes( $groupID );
+
+			// check this group ID exists and we have data for it
+			$pluginGroups = Studiorum_Utils::getPluignGroups();
+
+			// No groups?
+			if( !is_array( $pluginGroups ) ){
+				return new WP_Error( 'no-plugin-groups', __( 'No plugin groups found', 'studiorum' ) );
+			}
+
+			// No group with that ID?
+			if( !array_key_exists( $groupID, $pluginGroups ) ){
+				return new WP_Error( 'no-plugin-group-with-that-id', __( 'No plugin group can be found with that ID', 'studiorum' ) );
+			}
+
+			// Let's grab the data for this group
+			$groupData = $pluginGroups[$groupID];
+
+			// Check that this group contains a 'plugins' array
+			if( !isset( $groupData['plugins'] ) || !is_array( $groupData['plugins'] ) || empty( $groupData['plugins'] ) ){
+				return new WP_Error( 'group-contains-no-plugins', __( 'This plugin group contains no plugins', 'studiorum' ) );
+			}
+
+			// cache the plugins list for this plugin group
+			$thisGroupsPlugins = $groupData['plugins'];
+
+			// Now we need to go through this array of plugins and determine which - if any - are inactive.
+			// We'll then remove those inactive plugins from this set
+			// Start a fresh set for inactive pluigins
+			$activePlugins = array();
+
+			// Just in case the function isn't available (front-end, but *just to be on the safe side*)
+			if( !function_exists( 'is_plugin_active' ) ){
+				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			}
+
+			foreach( $thisGroupsPlugins as $key => $pluginPath )
+			{
+
+				if( is_plugin_active( $pluginPath ) ){
+					$activePlugins[] = $pluginPath;
+				}
+
+			}
+
+			// Empty? No inactive plugins, then. Lets's say so
+			if( empty( $activePlugins ) ){
+				return new WP_Error( 'all-group-plugins-active', __( 'All plugins in this group are already inactive', 'studiorum' ) );
+			}
+
+			do_action( 'studiorum_before_deactivate_plugin_group', $groupID, $activePlugins );
+
+			// We now have an array of plugins that are inactive that we'd like to activate. We should do that.
+			foreach( $activePlugins as $key => $plugin ){
+				static::deactivatePlugin( $plugin );
+			}
+
+			do_action( 'studiorum_after_deactivate_plugin_group', $groupID, $activePlugins );
+
+			// We'll have an empty filter here for extra data that we wish to send back to the AJAX request
+			$returnData = apply_filters( 'studiorum_after_deactivate_plugin_group_return_data', array(), $groupID, $activePlugins );
+
+			// OK, those plugins should now be active, report success
+			return $returnData;
+
+		}/* disablePluginGroup() */
 		
 		
+		/**
+		 * DANGER, WILL ROBINSON
+		 * ---------------------
+		 *
+		 * Generally speaking, plugin deactivation should be done using the WP sandbox on the plugin's page
+		 * We don't have that luxury. Use this method with absolute caution. If things break, I'm blaming you.
+		 *
+		 * @author Richard Tape <@richardtape>
+		 * @since 1.0
+		 * @param (string) $pluginPath - a part-path to a plugin to deactivate
+		 * @return null
+		 */
+		
+		public static function deactivatePlugin( $pluginPath )
+		{
+
+			$trimmedPath 	= trim( $pluginPath );
+
+			$current 		= get_option( 'active_plugins' );
+			$pluginPath 	= plugin_basename( $trimmedPath );
+
+			if( !in_array( $pluginPath, $current ) )
+			{
+
+				$current[] = $pluginPath;
+				sort( $current );
+
+				do_action( 'deactivate_plugin', $trimmedPath );
+				
+				update_option( 'active_plugins', $current );
+
+				do_action( 'deactivate_' . $trimmedPath );
+				do_action( 'deactivated_plugin', $trimmedPath );
+
+			}
+
+			return null;
+
+		}/* deactivatePlugin() */
 
 	}/* class Studiorum_Utils */

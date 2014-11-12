@@ -45,9 +45,10 @@
 			// if( confirmed ){
 
 				if( isActive ){
-					STUDIORUM.groupActivity.disablePluginGroup( groupID, nonce );
+					$( this ).trigger( 'studiorum_disable_group_confirmed', [ groupID, nonce, bttn, instance ] );
+					STUDIORUM.groupActivity.disablePluginGroup( groupID, nonce, bttn, instance );
 				}else{
-					$( this ).trigger( 'studiorum_enable_group_confirmed', [ groupID, nonce ] );
+					$( this ).trigger( 'studiorum_enable_group_confirmed', [ groupID, nonce, bttn, instance ] );
 					STUDIORUM.groupActivity.enablePluginGroup( groupID, nonce, bttn, instance );
 				}
 
@@ -63,7 +64,9 @@
 		 * @since 1.0
 		 * @param (string) groupID - the group id of the plugins to enable
 		 * @param (string) nonce - the nonce for this action
-		 * @return (bool)
+		 * @param (object) bttn - the button object that has been clicked
+		 * @param (object) instance - The loading bar instance object
+		 * @return null
 		 */
 		
 		enablePluginGroup: function( groupID, nonce, bttn, instance ){
@@ -93,23 +96,48 @@
 			STUDIORUM.groupActivity.runGroupAJAXRequest( data, 'enablePluginGroupSuccessCallback', successData, 'enablePluginGroupFailureCallback', failureData, 'enablePluginGroupBeforeSendCallback' );
 
 		},/* enablePluginGroup() */
-		
+
 
 		/**
 		 * Disable a group of plugins
 		 *
 		 * @author Richard Tape <@richardtape>
 		 * @since 1.0
-		 * @param (string) groupID - the group id of the plugins to disable
+		 * @param (string) groupID - the group id of the plugins to enable
 		 * @param (string) nonce - the nonce for this action
-		 * @return (bool)
+		 * @param (object) bttn - the button object that has been clicked
+		 * @param (object) instance - The loading bar instance object
+		 * @return null
 		 */
 		
-		disablePluginGroup: function( groupID, nonce ){
+		 disablePluginGroup: function( groupID, nonce, bttn, instance ){
 
-			console.log( groupID );
+			var progress = 0,
+			interval = setInterval( function() {
+				progress = Math.min( progress + Math.random() * 0.1, 1 );
+				instance._setProgress( progress );
+
+				if( progress === 1 ) {
+					instance._stop(1);
+					clearInterval( interval );
+				}
+			}, 200 );
+
+			// The data for our generic AJAX request, for enabling
+			data = {
+				action: 'disable_plugin_group',
+				groupID : groupID,
+				nonce: nonce
+			}
+
+			successData = {};
+
+			failureData = {}
+
+			STUDIORUM.groupActivity.runGroupAJAXRequest( data, 'disablePluginGroupSuccessCallback', successData, 'disablePluginGroupFailureCallback', failureData, 'disablePluginGroupBeforeSendCallback' );
 
 		},/* disablePluginGroup() */
+		
 
 
 		/**
@@ -212,19 +240,6 @@
 		 */
 		
 		enablePluginGroupSuccessCallback: function( callbackData ){
-			
-			// Collect our data
-			var data 			= callbackData.data;
-			var response 		= callbackData.response;
-			var AJAXData 		= callbackData.AJAXData;
-			var deactivateText	= studiorum_group_vars.strings.deactivate;
-
-			// We now need to update the classes of the group we've just activated and change the text
-			// to indicate that we have successfully done so
-
-			var clickedItem = $( '.group-action-onoff button[data-groupid="'+AJAXData.groupID+'"]' );
-
-			// clickedItem.text( deactivateText );
 
 		},
 
@@ -241,7 +256,7 @@
 		 * @return null
 		 */
 		enablePluginGroupFailureCallback: function( callbackData ){
-			console.log( callbackData );
+
 		},
 
 
@@ -289,6 +304,17 @@
 		},/* executeFunctionByName() */
 
 
+		/**
+		 * 
+		 *
+		 * @author Richard Tape <@richardtape>
+		 * @since 1.0
+		 * @param (object) event - the fired event
+		 * @param (int) status - success or failure (0 or 1 probably)
+		 * @param (object) button - the button that was clicked
+		 * @return 
+		 */
+		
 		changeButtonText: function( event, status, button ){
 
 			var statusClass = status >= 0 ? 'state-success' : 'state-error';

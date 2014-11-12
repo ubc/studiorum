@@ -233,6 +233,7 @@
 			#poststuff .module h3.icon.networking:before{ content: "\f325"; }
 			#poststuff .module h3.icon.yes:before{ content: "\f147"; }
 			#poststuff .module h3.icon.desktop:before{ content: "\f472"; }
+			#poststuff .module h3.icon.migrate:before{ content: "\f310"; }
 
 			.module p{
 				margin: 0;
